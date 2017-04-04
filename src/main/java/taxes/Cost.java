@@ -36,7 +36,7 @@ public class Cost {
     }
 
     @RequestMapping(path = "/test", method = {RequestMethod.GET})
-    public List<Transaction> write(Transaction lineToSave) throws IOException {
+    public List<Transaction> reader(Transaction lineToSave) throws IOException {
         File file = new File("test.txt");
         Scanner sc = new Scanner(file);
         ObjectMapper mapper = new ObjectMapper();
