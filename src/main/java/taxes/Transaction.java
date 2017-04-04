@@ -1,17 +1,17 @@
 package taxes;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
-	private BigDecimal cost;
-	private BigDecimal vat;
+	private Double cost;
+	private Double vat;
 	private String type;
 	private LocalDate date;
 	private String description;
 	
-	public Transaction(BigDecimal cost, BigDecimal vat, String type, String date, String description) {
+	public Transaction(Double cost, Double vat, String type, String date, String description) {
 		this.cost = cost;
 		this.vat = vat;
 		this.type = type;
@@ -24,16 +24,16 @@ public class Transaction {
 	
 	
 	
-	public BigDecimal getCost() {
+	public Double getCost() {
 		return cost;
 	}
-	public void setCost(BigDecimal cost) {
+	public void setCost(Double cost) {
 		this.cost = cost;
 	}
-	public BigDecimal getVat() {
+	public Double getVat() {
 		return vat;
 	}
-	public void setVat(BigDecimal vat) {
+	public void setVat(Double vat) {
 		this.vat = vat;
 	}
 	public String getType() {
