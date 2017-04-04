@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/taxes")
@@ -25,27 +26,52 @@ public class Cost {
 
     List<Transaction> list = new ArrayList<Transaction>();
 
-    @RequestMapping(path = "/test", method = {RequestMethod.POST})
-    public String save(@RequestBody Transaction lineToSave) throws IOException {
+    @RequestMapping(path = "/save", method = {RequestMethod.POST})
+    public String saveTransaction(@RequestBody Transaction lineToSave) throws IOException {
 
         File file = new File("test.txt");
         Writer writer = new FileWriter(file, true);  // mozna tu wyzerowac plik false
-        writer.write(lineToSave+ System.lineSeparator());
+        writer.write(lineToSave + System.lineSeparator());
         writer.flush();
-        return "zapisano";
+        return "new transaction saved";
     }
 
+
     @RequestMapping(path = "/test", method = {RequestMethod.GET})
-    public List<Transaction> reader(Transaction lineToSave) throws IOException {
+    public List<Transaction> reader() throws IOException {
         File file = new File("test.txt");
         Scanner sc = new Scanner(file);
         ObjectMapper mapper = new ObjectMapper();
-        while(sc.hasNextLine()){
-            Transaction newTransaction = mapper.readValue(sc.nextLine(),Transaction.class);
+        while (sc.hasNextLine()) {
+            Transaction newTransaction = mapper.readValue(sc.nextLine(), Transaction.class);
             list.add(newTransaction);
 
         }
         return list;
+    }
+
+    @RequestMapping(path = "/income", method = {RequestMethod.GET})
+    public List<Transaction> income() throws IOException {
+        return reader().stream().filter(s -> s.getType().equals("income")).sorted((s1,s2)->s2.getCost().compareTo(s1.getCost())).collect(Collectors.toList());
+
+    }
+
+    @RequestMapping(path = "/costs", method = {RequestMethod.GET})
+    public List<Transaction> costs() throws IOException {
+        return reader().stream().filter(s -> s.getType().equals("cost")).sorted((s1,s2)->s2.getCost().compareTo(s1.getCost())).collect(Collectors.toList());
+
+    }
+
+    @RequestMapping(path = "/incomeSum", method = {RequestMethod.GET})
+    public double incomeSum() throws IOException {
+        return reader().stream().filter(s -> s.getType().equals("income")).mapToDouble(Transaction::getCost).sum();
+
+    }
+
+    @RequestMapping(path = "/costsSum", method = {RequestMethod.GET})
+    public double costSum() throws IOException {
+        return reader().stream().filter(s -> s.getType().equals("cost")).mapToDouble(Transaction::getCost).sum();
+
     }
 
 }
