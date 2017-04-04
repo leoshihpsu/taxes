@@ -55,12 +55,12 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "Transaction{" +
-				"cost=" + cost +
-				", vat=" + vat +
-				", type='" + type + '\'' +
-				", date='" + date + '\'' +
-				", description='" + description + '\'' +
-				'}';
+		return "{ " +
+				" \"cost\": " + cost +
+				", \"vat\": " + vat +
+				", \"type\": "+ "\"" + type + "\"" +
+				", \"date\": " + "\"" + date + "\"" +
+				", \"description\": "+ "\"" + description + "\" " +
+				"}";
 	}
 }
