@@ -1,25 +1,22 @@
 package taxes;
 
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 public class Transaction {
 	private Double cost;
 	private Double vat;
 	private String type;
-	private LocalDate date;
+	private String date;
 	private String description;
 	
-	public Transaction(Double cost, Double vat, String type, String date, String description) {
+	/*public Transaction(Double cost, Double vat, String type, String date, String description) {
 		this.cost = cost;
 		this.vat = vat;
 		this.type = type;
 		this.description = description;
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 	    this.date = LocalDate.parse(date, dtf);
-		
-	}
+
+	}*/
 	
 	
 	
@@ -42,10 +39,10 @@ public class Transaction {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
-	public void setDate(LocalDate date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	public String getDescription() {
@@ -54,8 +51,16 @@ public class Transaction {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
 
+
+	@Override
+	public String toString() {
+		return "Transaction{" +
+				"cost=" + cost +
+				", vat=" + vat +
+				", type='" + type + '\'' +
+				", date='" + date + '\'' +
+				", description='" + description + '\'' +
+				'}';
+	}
 }
