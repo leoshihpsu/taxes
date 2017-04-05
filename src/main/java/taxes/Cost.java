@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +26,14 @@ import java.util.stream.Collectors;
 public class Cost {
 
 
+    public static final String INCOME = "income";
     List<Transaction> list = new ArrayList<Transaction>();
 
     @RequestMapping(path = "/save", method = {RequestMethod.POST})
     public String saveTransaction(@RequestBody Transaction lineToSave) throws IOException {
 
+        BigDecimal tempCost = new BigDecimal(lineToSave.getCost());
+        lineToSave.setVat(tempCost);
         File file = new File("test.txt");
         Writer writer = new FileWriter(file, true);  // mozna tu wyzerowac plik false
         writer.write(lineToSave + System.lineSeparator());
