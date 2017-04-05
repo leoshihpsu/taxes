@@ -1,27 +1,22 @@
 package taxes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
-import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
+
 
 @RestController
 @RequestMapping("/taxes")
@@ -101,26 +96,22 @@ public class Cost {
         double incomeTemp = reader().stream().filter(s -> s.getType().equals("income")).mapToDouble(Transaction::getCost).sum();
         double costTemp = reader().stream().filter(s -> s.getType().equals("cost")).mapToDouble(Transaction::getCost).sum();
 
-
-
-        // metoda z konwersja lub mozna poprostu sume po get.vat
-
         BigDecimal tmpVatPaid = new BigDecimal(incomeTemp);
         BigDecimal vatPaid = tmpVatPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
-        BigDecimal tmpVatToPaid = new BigDecimal(costTemp);
-        BigDecimal vatToPaid = tmpVatToPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
-        BigDecimal vatTotal = vatPaid.subtract(vatToPaid);
+    BigDecimal tmpVatToPay = new BigDecimal(costTemp);
+    BigDecimal vatToPay = tmpVatToPay.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
+    BigDecimal vatTotal = vatPaid.subtract(vatToPay);
         return vatTotal;
     }
 
     @RequestMapping(path = "/taxesFromDate/{date}", method = {RequestMethod.GET})
     public String taxesFromDate(@PathVariable String date) throws IOException, ParseException {
 
-               double XdayIncome = reader().stream().filter(s -> s.getType().equals("income"))
+        double XdayIncome = reader().stream().filter(s -> s.getType().equals("income"))
                 .filter(s -> (LocalDate.parse(s.getDate(),DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                .isAfter( LocalDate.parse(date,DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
+                        .isAfter(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
 
-               double XdayCost = reader().stream().filter(s -> s.getType().equals("cost"))
+        double XdayCost = reader().stream().filter(s -> s.getType().equals("cost"))
                 .filter(s -> (LocalDate.parse(s.getDate(),DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                         .isAfter( LocalDate.parse(date,DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
 
@@ -131,10 +122,32 @@ public class Cost {
         BigDecimal XdayVatTotal = vatPaid.subtract(vatToPaid);
 
 
-
-               return "income: " +XdayIncome +" cost: "+ XdayCost +" Taxy: " + XdayVatTotal ;
+        return "income: " + XdayIncome + " cost: " + XdayCost + " Taxy: " + XdayVatTotal;
     }
 
+    @RequestMapping(path = "/taxesWithDates/{number}", method = {RequestMethod.GET})
+    public BigDecimal taxesWithDates(@PathVariable String number) throws IOException, ParseException {
 
+        Predicate<Transaction> withDates = t -> {
+            LocalDate dt = LocalDate.parse(t.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate now = LocalDate.now();
+            int days = Period.between(dt, now).getDays();
+            if (ChronoUnit.DAYS.between(dt, now) <= Integer.parseInt(number)) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        double incomeTemp = reader().stream().filter(withDates).filter(s -> s.getType().equals("income")).mapToDouble(Transaction::getCost).sum();
+        double costTemp = reader().stream().filter(withDates).filter(s -> s.getType().equals("cost")).mapToDouble(Transaction::getCost).sum();
+
+        BigDecimal tmpVatPaid = new BigDecimal(incomeTemp);
+        BigDecimal vatPaid = tmpVatPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
+        BigDecimal tmpVatToPay = new BigDecimal(costTemp);
+        BigDecimal vatToPay = tmpVatToPay.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
+        BigDecimal vatTotal = vatPaid.subtract(vatToPay);
+        return vatTotal;
+    }
 
 }
