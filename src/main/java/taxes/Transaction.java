@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+
 public class Transaction {
     private Double cost;
     private BigDecimal vat;
@@ -14,13 +15,11 @@ public class Transaction {
 
     public Transaction(){}
 
-    public Transaction(Double cost,  String type, String date, String description) {
+    public Transaction(Double cost, String type, String date, String description) {
         this.cost = cost;
-        //vat = cost * 0.23;
         this.type = type;
         this.description = description;
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
-        // this.date = LocalDate.parse(date, dtf);
+        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy MMM dd");
         this.date = date;
     }
 

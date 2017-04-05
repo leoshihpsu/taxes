@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -34,6 +35,7 @@ public class Cost {
 
         BigDecimal tempCost = new BigDecimal(lineToSave.getCost());
         lineToSave.setVat(tempCost);
+
         File file = new File("test.txt");
         Writer writer = new FileWriter(file, true);  // mozna tu wyzerowac plik false
         writer.write(lineToSave + System.lineSeparator());
@@ -57,6 +59,7 @@ public class Cost {
 
     @RequestMapping(path = "/income", method = {RequestMethod.GET})
     public List<Transaction> income() throws IOException {
+
         return reader().stream().filter(s -> s.getType().equals("income")).sorted((s1,s2)->s2.getCost().compareTo(s1.getCost())).collect(Collectors.toList());
 
     }
