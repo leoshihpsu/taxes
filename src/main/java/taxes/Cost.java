@@ -1,11 +1,13 @@
 package taxes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.ui.Model;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.print.DocFlavor;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -155,4 +157,13 @@ public class Cost {
     }
 
 
-}
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView method() {
+        return new ModelAndView( "http//localhost:8089/swagger-ui.html");
+
+    }
+
+        }
+
+
+
