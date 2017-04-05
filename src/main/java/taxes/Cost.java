@@ -1,7 +1,11 @@
 package taxes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -150,4 +154,8 @@ public class Cost {
         return vatTotal;
     }
 
+    @RequestMapping(value = "redirect", method = RequestMethod.GET)
+    public View index(Model model) {
+        return new RedirectView("https://github.com");
+    }
 }
