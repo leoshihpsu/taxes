@@ -2,10 +2,8 @@ package taxes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
@@ -18,7 +16,11 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -94,7 +96,7 @@ public class Cost {
         return newList;
     }
 
-    @RequestMapping(path = "/taxesAll", method = {RequestMethod.GET})
+@RequestMapping(path = "/taxesAll", method = {RequestMethod.GET})
     public BigDecimal taxesAll() throws IOException, ParseException {
         double incomeTemp = reader().stream().filter(s -> s.getType().equals("income")).mapToDouble(Transaction::getCost).sum();
         double costTemp = reader().stream().filter(s -> s.getType().equals("cost")).mapToDouble(Transaction::getCost).sum();
@@ -104,11 +106,34 @@ public class Cost {
         BigDecimal vatPaid = tmpVatPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
         BigDecimal tmpVatToPaid = new BigDecimal(costTemp);
         BigDecimal vatToPaid = tmpVatToPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
-
         BigDecimal vatTotal = vatToPaid.subtract(vatPaid);
-
-
         return vatTotal;
     }
+
+    @RequestMapping(path = "/taxesWithDates/{number}", method = {RequestMethod.GET})
+    public BigDecimal taxesWithDates(@PathVariable String number) throws IOException, ParseException {
+
+        Predicate<Transaction> withDates = t -> {
+            LocalDate dt = LocalDate.parse(t.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate now = LocalDate.now();
+            if(Period.between ( now , dt ).getDays() <= Integer.parseInt(number)){
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        double incomeTemp = reader().stream().filter(s -> s.getType().equals("income")).filter(withDates).mapToDouble(Transaction::getCost).sum();
+        double costTemp = reader().stream().filter(s -> s.getType().equals("cost")).filter(withDates).mapToDouble(Transaction::getCost).sum();
+
+        BigDecimal tmpVatPaid = new BigDecimal(incomeTemp);
+        BigDecimal vatPaid = tmpVatPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
+        BigDecimal tmpVatToPaid = new BigDecimal(costTemp);
+        BigDecimal vatToPaid = tmpVatToPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
+        BigDecimal vatTotal = vatToPaid.subtract(vatPaid);
+        return vatTotal;
+    }
+
+
 
 }
