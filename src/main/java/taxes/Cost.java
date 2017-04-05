@@ -27,7 +27,7 @@ public class Cost {
 
 
     public static final String INCOME = "income";
-    List<Transaction> list = new ArrayList<Transaction>();
+
 
     @RequestMapping(path = "/save", method = {RequestMethod.POST})
     public String saveTransaction(@RequestBody Transaction lineToSave) throws IOException {
@@ -44,6 +44,7 @@ public class Cost {
 
     @RequestMapping(path = "/test", method = {RequestMethod.GET})
     public List<Transaction> reader() throws IOException {
+        List<Transaction> list = new ArrayList<Transaction>();
         File file = new File("test.txt");
         Scanner sc = new Scanner(file);
         ObjectMapper mapper = new ObjectMapper();
@@ -72,7 +73,9 @@ public class Cost {
 
     @RequestMapping(path = "/costsSum", method = {RequestMethod.GET})
     public double costSum() throws IOException {
-        return reader().stream().filter(s -> s.getType().equals("cost")).mapToDouble(Transaction::getCost).sum();
+        double sumTmp = reader().stream().filter(s -> s.getType().equals("cost")).mapToDouble(Transaction::getCost).sum();
+        return sumTmp;
+
     }
 
     @RequestMapping(path = "/costsLast5", method = {RequestMethod.GET})
