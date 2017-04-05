@@ -154,8 +154,5 @@ public class Cost {
         return vatTotal;
     }
 
-    @RequestMapping(value = "redirect", method = RequestMethod.GET)
-    public View index(Model model) {
-        return new RedirectView("https://github.com");
-    }
+
 }
