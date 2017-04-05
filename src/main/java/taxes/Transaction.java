@@ -2,7 +2,6 @@ package taxes;
 
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 
@@ -55,7 +54,7 @@ public class Transaction {
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this. date = date;
     }
 
     public String getDescription() {
