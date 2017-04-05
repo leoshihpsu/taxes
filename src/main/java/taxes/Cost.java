@@ -1,5 +1,6 @@
 package taxes;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -12,6 +13,10 @@ import java.util.List;
 @RequestMapping("/taxes")
 public class Cost {
 
+    CostProcessor cp;
+    public Cost (@Autowired CostProcessor cp){
+        this.cp = cp;
+    }
 
 
     @RequestMapping(path = "/save", method = {RequestMethod.POST})

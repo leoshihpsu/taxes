@@ -2,6 +2,7 @@ package taxes;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.File;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+@Service
 public class CostProcessor {
 
     public static String saveProcessor(Transaction lineToSave) throws IOException {
