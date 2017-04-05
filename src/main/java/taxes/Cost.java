@@ -113,16 +113,16 @@ public class Cost {
         return vatTotal;
     }
 
-    @RequestMapping(path = "/taxesWithDates/{number}", method = {RequestMethod.GET})
-    public String taxesWithDates(@PathVariable String number) throws IOException, ParseException {
+    @RequestMapping(path = "/taxesFromDate/{date}", method = {RequestMethod.GET})
+    public String taxesFromDate(@PathVariable String date) throws IOException, ParseException {
 
                double XdayIncome = reader().stream().filter(s -> s.getType().equals("income"))
                 .filter(s -> (LocalDate.parse(s.getDate(),DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                .isAfter( LocalDate.parse(number,DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
+                .isAfter( LocalDate.parse(date,DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
 
                double XdayCost = reader().stream().filter(s -> s.getType().equals("cost"))
                 .filter(s -> (LocalDate.parse(s.getDate(),DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                        .isAfter( LocalDate.parse(number,DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
+                        .isAfter( LocalDate.parse(date,DateTimeFormatter.ofPattern("yyyy-MM-dd"))))).mapToDouble(Transaction::getCost).sum();
 
         BigDecimal tmpVatPaid = new BigDecimal(XdayIncome);
         BigDecimal vatPaid = tmpVatPaid.multiply(new BigDecimal(0.23)).setScale(2, RoundingMode.CEILING);
