@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 @Service
 public class CostProcessor {
-    private static File file = new File("test.txt");
+    private static File file = new File("main.txt");
 
     public static void setFile(File file) {
         CostProcessor.file = file;
