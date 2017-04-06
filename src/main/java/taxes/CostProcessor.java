@@ -23,12 +23,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 @Service
 public class CostProcessor {
+    private static File file = new File("test.txt");
+
+    public static void setFile(File file) {
+        CostProcessor.file = file;
+    }
 
     public static String saveProcessor(Transaction lineToSave) throws IOException {
 
         BigDecimal tempCost = new BigDecimal(lineToSave.getCost());
         lineToSave.setVat(tempCost);
-        File file = new File("test.txt");
         Writer writer = new FileWriter(file, true);
         writer.write(lineToSave + System.lineSeparator());
         writer.flush();
@@ -37,7 +41,6 @@ public class CostProcessor {
 
     public static List<Transaction> readerProcessor() throws IOException {
         List<Transaction> list = new ArrayList<Transaction>();
-        File file = new File("test.txt");
         Scanner sc = new Scanner(file);
         ObjectMapper mapper = new ObjectMapper();
         while (sc.hasNextLine()) {
@@ -115,7 +118,6 @@ public class CostProcessor {
         Predicate<Transaction> withDates = t -> {
             LocalDate dt = LocalDate.parse(t.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate now = LocalDate.now();
-            int days = Period.between(dt, now).getDays();
             if (ChronoUnit.DAYS.between(dt, now) <= Integer.parseInt(number)) {
                 return true;
             } else {
