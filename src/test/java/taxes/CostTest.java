@@ -22,6 +22,7 @@ import taxes.Transaction;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,6 +91,16 @@ public class CostTest {
         CostProcessor.setFile(new File("test.txt"));
         CostProcessor.saveProcessor(new taxes.Transaction((double) 150,"income","2017-04-02","dsa"));
         List<taxes.Transaction> list = CostProcessor.readerProcessor();
+        assertEquals("2017-04-02", list.get(0).getDate());
+
+    }
+    
+    @Test
+    public void testReader() throws Exception {
+        CostProcessor.setFile(new File("test.txt"));
+        CostProcessor.readerProcessor();
+        List<taxes.Transaction> list = new ArrayList();
+        list.add(0, new taxes.Transaction((double) 150,"income","2017-04-02","dsa"));
         assertEquals("2017-04-02", list.get(0).getDate());
 
     }
